@@ -27,9 +27,17 @@ Zwróć dokładnie ten obiekt JSON:
 app.post('/api/analyze', async (req, res) => {
   const { image, mediaType } = req.body;
 
-  if (!image || !mediaType) {
+  if (!image) {
     return res.status(400).json({ error: 'Brak zdjęcia' });
   }
+
+  // Auto-detect real media type from base64 magic bytes
+  const header = Buffer.from(image.slice(0, 12), 'base64');
+  let detectedType = mediaType || 'image/jpeg';
+  if (header[0] === 0x89 && header[1] === 0x50) detectedType = 'image/png';
+  else if (header[0] === 0xFF && header[1] === 0xD8) detectedType = 'image/jpeg';
+  else if (header[0] === 0x52 && header[1] === 0x49) detectedType = 'image/webp';
+  else if (header[0] === 0x47 && header[1] === 0x49) detectedType = 'image/gif';
 
   if (!process.env.ANTHROPIC_API_KEY) {
     return res.status(500).json({ error: 'Brak klucza API — ustaw ANTHROPIC_API_KEY w zmiennych środowiskowych Railway' });
@@ -50,7 +58,7 @@ app.post('/api/analyze', async (req, res) => {
         messages: [{
           role: 'user',
           content: [
-            { type: 'image', source: { type: 'base64', media_type: mediaType, data: image } },
+            { type: 'image', source: { type: 'base64', media_type: detectedType, data: image } },
             { type: 'text', text: 'Przeanalizuj to zdjęcie dachu i zwróć JSON.' }
           ]
         }]
