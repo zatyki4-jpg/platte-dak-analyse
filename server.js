@@ -148,7 +148,7 @@ app.post('/api/analyze', async (req, res) => {
       },
       body: JSON.stringify({
         model: 'claude-opus-4-7',
-        max_tokens: 2500,
+        max_tokens: 8000,
         system: SYSTEM_PROMPT,
         messages: [{
           role: 'user',
