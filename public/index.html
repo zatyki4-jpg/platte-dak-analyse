@@ -52,6 +52,7 @@
   .result-value { padding: 10px 14px; font-size: 12px; line-height: 1.65; color: var(--text); }
   .result-value.accent { color: var(--accent); font-family: 'Syne', sans-serif; font-weight: 600; font-size: 13px; }
   .result-value.risk { color: var(--accent2); }
+  .result-value.conform { color: #4caf7d; }
   .result-value.norma { color: var(--green); font-size: 11px; }
   .export-btn { display: none; margin-top: 16px; width: 100%; padding: 11px; background: transparent; color: var(--accent); border: 1px solid var(--accent); border-radius: 8px; font-family: 'Syne', sans-serif; font-weight: 600; font-size: 12px; cursor: pointer; text-transform: uppercase; letter-spacing: 1px; transition: all 0.15s; }
   .export-btn:hover { background: var(--accent); color: #000; }
@@ -117,6 +118,7 @@ const T = {
     sec_tech: 'Technische analyse',
     sec_desc: 'Beschrijving',
     l_systeem: 'Systeem', l_onder: 'Onderbouw', l_mat: 'Materiaal',
+    l_conform: 'Conform normen',
     l_detail: 'Detail', l_norm: 'Normen', l_risk: 'Risico'
   },
   PL: {
@@ -131,6 +133,7 @@ const T = {
     sec_tech: 'Analiza techniczna',
     sec_desc: 'Opis',
     l_systeem: 'System', l_onder: 'Podkonstrukcja', l_mat: 'Materiał',
+    l_conform: 'Zgodność z normami',
     l_detail: 'Detal', l_norm: 'Normy', l_risk: 'Ryzyko'
   },
   EN: {
@@ -145,6 +148,7 @@ const T = {
     sec_tech: 'Technical analysis',
     sec_desc: 'Description',
     l_systeem: 'System', l_onder: 'Structure', l_mat: 'Material',
+    l_conform: 'Compliant with standards',
     l_detail: 'Detail', l_norm: 'Standards', l_risk: 'Risk'
   }
 };
@@ -245,7 +249,8 @@ function renderResult(d) {
     { label: t.l_onder,   key: `Onder_${L}`,   cls: '' },
     { label: t.l_mat,     key: `Materiaal_${L}`,cls: '' },
     { label: t.l_detail,  key: `Detail_${L}`,   cls: '' },
-    { label: t.l_norm,    key: `Normen_${L}`,   cls: 'norma' },
+    { label: t.l_norm,    key: `Normen_${L}`,      cls: 'norma' },
+    { label: t.l_conform, key: `Conformiteit_${L}`, cls: 'conform' },
     { label: t.l_risk,    key: `Risico_${L}`,   cls: 'risk' },
   ].forEach(r => addRow(r.label, d[r.key] || '—', r.cls));
 
