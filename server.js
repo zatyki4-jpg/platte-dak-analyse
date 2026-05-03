@@ -165,7 +165,7 @@ app.post('/api/analyze', async (req, res) => {
 
     const text = data.content?.map(i => i.text || '').join('') || '';
     const clean = text.replace(/```json|```/g, '').trim();
-    const parsed = const parsed = JSON.parse(clean);
+    const parsed = JSON.parse(clean);
 
     // Naprawa typowych literówek modelu w nazwach kluczy
     const keyFixes = {
