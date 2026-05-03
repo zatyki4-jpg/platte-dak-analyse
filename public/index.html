@@ -103,7 +103,7 @@
 <button class="export-btn" id="export-btn">⬇ <span id="export-text">Exporteer CSV</span></button>
 
 <script>
-if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js');
+if ('serviceWorker' in navigator) navigator.serviceWorker.register('/sw.js').catch(() => {});
 
 const T = {
   NL: {
