@@ -147,7 +147,7 @@ app.post('/api/analyze', async (req, res) => {
         'anthropic-version': '2023-06-01'
       },
       body: JSON.stringify({
-        model: 'claude-opus-4-5',
+        model: 'claude-opus-4-7',
         max_tokens: 2500,
         system: SYSTEM_PROMPT,
         messages: [{
@@ -165,7 +165,22 @@ app.post('/api/analyze', async (req, res) => {
 
     const text = data.content?.map(i => i.text || '').join('') || '';
     const clean = text.replace(/```json|```/g, '').trim();
-    const parsed = JSON.parse(clean);
+    const parsed = const parsed = JSON.parse(clean);
+
+    // Naprawa typowych literówek modelu w nazwach kluczy
+    const keyFixes = {
+      'Risiko_PL': 'Risico_PL',
+      'Risiko_NL': 'Risico_NL',
+      'Risiko_EN': 'Risico_EN'
+    };
+    for (const [wrong, right] of Object.entries(keyFixes)) {
+      if (parsed[wrong] && !parsed[right]) {
+        parsed[right] = parsed[wrong];
+        delete parsed[wrong];
+      }
+    }
+
+    res.json(parsed);
     res.json(parsed);
   } catch (err) {
     res.status(500).json({ error: err.message });
