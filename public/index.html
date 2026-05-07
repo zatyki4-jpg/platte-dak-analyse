@@ -191,19 +191,42 @@ fileInput.addEventListener('change', () => { if (fileInput.files[0]) handleFile(
 cameraInput.addEventListener('change', () => { if (cameraInput.files[0]) handleFile(cameraInput.files[0]); });
 
 function handleFile(file) {
-  const ext = (file.name||'').split('.').pop().toLowerCase();
-  const extMap = { jpg:'image/jpeg', jpeg:'image/jpeg', png:'image/png', webp:'image/webp', gif:'image/gif' };
-  mediaTypeStored = extMap[ext] || file.type || 'image/jpeg';
   const reader = new FileReader();
   reader.onload = e => {
-    base64Data = e.target.result.split(',')[1];
-    previewImg.src = e.target.result;
-    previewWrap.style.display = 'block';
-    analyzeBtn.disabled = false;
-    resultGrid.style.display = 'none';
-    exportBtn.style.display = 'none';
-    errorBox.style.display = 'none';
-    lastResult = null;
+    const img = new Image();
+    img.onload = () => {
+      const MAX_DIM = 2000;
+      let { width, height } = img;
+      if (width > MAX_DIM || height > MAX_DIM) {
+        if (width > height) {
+          height = Math.round(height * (MAX_DIM / width));
+          width = MAX_DIM;
+        } else {
+          width = Math.round(width * (MAX_DIM / height));
+          height = MAX_DIM;
+        }
+      }
+      const canvas = document.createElement('canvas');
+      canvas.width = width;
+      canvas.height = height;
+      const ctx = canvas.getContext('2d');
+      ctx.drawImage(img, 0, 0, width, height);
+      const dataUrl = canvas.toDataURL('image/jpeg', 0.85);
+      mediaTypeStored = 'image/jpeg';
+      base64Data = dataUrl.split(',')[1];
+      previewImg.src = dataUrl;
+      previewWrap.style.display = 'block';
+      analyzeBtn.disabled = false;
+      resultGrid.style.display = 'none';
+      exportBtn.style.display = 'none';
+      errorBox.style.display = 'none';
+      lastResult = null;
+    };
+    img.onerror = () => {
+      errorBox.textContent = '❌ Nie można wczytać zdjęcia';
+      errorBox.style.display = 'block';
+    };
+    img.src = e.target.result;
   };
   reader.readAsDataURL(file);
 }
