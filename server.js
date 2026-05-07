@@ -4,7 +4,8 @@ const path = require('path');
 
 const app = express();
 app.use(cors());
-app.use(express.json({ limit: '20mb' }));
+app.use(express.json({ limit: '50mb' }));
+app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
 
 const SYSTEM_PROMPT = `You are a senior technical expert in flat roof construction and waterproofing in Belgium, with deep knowledge of Belgian and Dutch standards.
@@ -169,7 +170,12 @@ app.post('/api/analyze', async (req, res) => {
   }
 });
 
-app.get('*', (req, res) => res.sendFile(path.join(__dirname, 'public', 'index.html')));
+app.get('*', (req, res) => {
+  if (req.path.startsWith('/api/')) {
+    return res.status(404).json({ error: 'Endpoint nie znaleziony' });
+  }
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
+});
 
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => console.log(`Platte Dak Analyse running on port ${PORT}`));
