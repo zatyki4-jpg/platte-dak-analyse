@@ -1,12 +1,18 @@
 const express = require('express');
 const cors = require('cors');
 const path = require('path');
+const { subscriptionAccount } = require('./subscription-account');
 
 const app = express();
 app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ limit: '50mb', extended: true }));
 app.use(express.static(path.join(__dirname, 'public')));
+
+app.get('/api/billing/profile', (req, res) => {
+  res.set('Cache-Control', 'no-store');
+  res.json({ ok: true, ...subscriptionAccount() });
+});
 
 const SYSTEM_PROMPT = `You are a senior technical expert in flat roof construction and waterproofing in Belgium, with deep knowledge of Belgian and Dutch standards.
 

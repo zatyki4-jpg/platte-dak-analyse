@@ -1,0 +1,12 @@
+'use strict';
+const assert = require('node:assert/strict');
+const {normalizeIban,subscriptionAccount} = require('./subscription-account');
+const env = {SUBSCRIPTION_BANK_IBAN:'LT30 3250 0850 3233 9737',SUBSCRIPTION_BANK_BENEFICIARY:'MARKA CONSTRUCT BV',SUBSCRIPTION_BANK_BIC:'REVOLT21',INVOICE_IBAN:'BE60734074356670'};
+assert.equal(normalizeIban(env.SUBSCRIPTION_BANK_IBAN),'LT303250085032339737');
+assert.equal(subscriptionAccount(env).account.iban,'LT303250085032339737');
+assert.equal(subscriptionAccount(env).scope,'digital_services');
+assert.equal(subscriptionAccount(env).payment_processing_active,false);
+assert.equal(env.INVOICE_IBAN,'BE60734074356670');
+for (const patch of [{SUBSCRIPTION_BANK_IBAN:'LT303250085032339738'},{SUBSCRIPTION_BANK_BENEFICIARY:''},{SUBSCRIPTION_BANK_BIC:'<script>'}]) assert.equal(subscriptionAccount({...env,...patch}).account,null);
+assert.equal(subscriptionAccount({}).configured,false);
+console.log('PASS: configured digital receiver, checksum validation, fail-closed invalid profiles, no automatic payment activation.');
